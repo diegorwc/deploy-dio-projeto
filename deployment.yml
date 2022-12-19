@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: diegorw1/app-database-projeto:1.0
+        name: mysql
+        env:          
+        - name: MYSQL_ROOT_PASSWORD
+          value: projeto_123
+        - name: MYSQL_DATABASE
+          value: comentarios
+        ports:
+        - containerPort: 3306
+          name: mysql
+        
+        volumeMounts:
+        - name: local
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: local
+        hostPath:
+          path: /meubanco/
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-php
+  labels:
+    app: app-php
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: app-php
+  template:
+    metadata:
+      labels:
+        app: app-php
+    spec:
+      containers:
+      - name: app-php
+        image: diegorw1/app-php-projeto:1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+---
+# Services
+# php
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-php
+spec:
+  selector:
+    app: app-php
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+#MySQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-connection
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
