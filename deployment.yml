@@ -39,7 +39,7 @@ spec:
         app: mysql
     spec:
       containers:
-      - image: diegorw1/app-database-projeto:1.0
+      - image: diegorw1/app-database-projeto:1.1
         args:
         - "--ignore-db-dir=lost+found" 
         imagePullPolicy: Always
