@@ -14,6 +14,7 @@ spec:
       containers:
       - image: diegorw1/app-database-projeto:1.0
         name: mysql
+        imagePullPolicy: Always
         env:          
         - name: MYSQL_ROOT_PASSWORD
           value: projeto_123
