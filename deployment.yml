@@ -1,3 +1,30 @@
+# Services
+# php
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-php
+spec:
+  selector:
+    app: app-php
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+#MySQL
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-connection
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+# Deployments
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,17 +40,13 @@ spec:
     spec:
       containers:
       - image: diegorw1/app-database-projeto:1.0
-        name: mysql
+        args:
+        - "--ignore-db-dir=lost+found" 
         imagePullPolicy: Always
-        env:          
-        - name: MYSQL_ROOT_PASSWORD
-          value: projeto_123
-        - name: MYSQL_DATABASE
-          value: comentarios
+        name: mysql
         ports:
         - containerPort: 3306
           name: mysql
-        
         volumeMounts:
         - name: local
           mountPath: /var/lib/mysql
@@ -54,29 +77,3 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 80
----
-# Services
-# php
-apiVersion: v1
-kind: Service
-metadata:
-  name: app-php
-spec:
-  selector:
-    app: app-php
-  ports:
-    - port: 80
-      targetPort: 80
-  type: LoadBalancer
----
-#MySQL
-apiVersion: v1
-kind: Service
-metadata:
-  name: mysql-connection
-spec:
-  ports:
-  - port: 3306
-  selector:
-    app: mysql
-  clusterIP: None
