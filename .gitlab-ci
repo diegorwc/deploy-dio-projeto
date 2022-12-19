@@ -1,0 +1,22 @@
+stages:
+  - build
+
+build_images:
+  stage: build
+  image: docker:20.10.16
+
+  services:
+    - docker:20.10.16-dind
+
+  variables:
+    DOCKER_TLS_CERTDIT: "/certs"
+
+  before_script:
+    - docker login -u $USER -p $PASS
+  
+  script:
+    - docker build -t diegorw1/app-php-projeto:1.0 backend/.
+    - docker build -t diegorw1/app-database-projeto:1.0 database/.
+    - docker push diegorw1/app-php-projeto:1.0
+    - docker push diegorw1/app-database-projeto:1.0
+
