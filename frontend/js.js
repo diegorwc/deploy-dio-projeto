@@ -1,13 +1,13 @@
 $("#button-blue").on("click", function() {
-    
+        
     var txt_nome = $("#name").val();
     var txt_email = $("#email").val();
     var txt_comentario = $("#comment").val();
 
     $.ajax({
-        url: "http://192.168.59.100:30554",
+        url: "http://192.168.59.102:32510",
         
-        type: "post",
+        type: "post",        
         data: {nome: txt_nome, comentario: txt_comentario, email: txt_email},
         beforeSend: function() {
         
